@@ -24,9 +24,9 @@
 #include "common/util/hash_util.h"
 
 /** @brief Dense bucket size. */
-#define DENSE_BUCKET_SIZE 4
+#define DENSE_BUCKET_SIZE 4            // 密集桶的大小 
 /** @brief Overflow bucket size. */
-#define OVERFLOW_BUCKET_SIZE 3
+#define OVERFLOW_BUCKET_SIZE 3         // 溢出桶的大小
 
 /** @brief Total bucket size. */
 #define TOTAL_BUCKET_SIZE (DENSE_BUCKET_SIZE + OVERFLOW_BUCKET_SIZE)
@@ -48,10 +48,14 @@ class HyperLogLogPresto {
   /** @brief Disabling default constructor. */
   HyperLogLogPresto() = delete;
 
+  /** @brief Parameterized constructor. */
   explicit HyperLogLogPresto(int16_t n_leading_bits);
 
   /** @brief Returns the dense_bucket_ data structure. */
-  auto GetDenseBucket() const -> std::vector<std::bitset<DENSE_BUCKET_SIZE>> { return dense_bucket_; }
+  auto GetDenseBucket() const -> std::vector<std::bitset<DENSE_BUCKET_SIZE>> {
+    fmt::println("{}", dense_bucket_[0].to_ulong());
+    return dense_bucket_;
+  }
 
   /** @brief Returns overflow bucket of a specific given index. */
   auto GetOverflowBucketofIndex(uint16_t idx) { return overflow_bucket_[idx]; }
@@ -59,8 +63,10 @@ class HyperLogLogPresto {
   /** @brief Returns the cardinality of the set. */
   auto GetCardinality() const -> uint64_t { return cardinality_; }
 
+  /** @brief Element is added for HLL calculation. */
   auto AddElem(KeyType val) -> void;
 
+  /** @brief Function to compute cardinality. */
   auto ComputeCardinality() -> void;
 
  private:
@@ -92,6 +98,7 @@ class HyperLogLogPresto {
   uint64_t cardinality_;
 
   // TODO(student) - can add more data structures as required
+  int16_t leading_bits_;
 };
 
 }  // namespace bustub
